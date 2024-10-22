@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Command Prompt with Ping</title>
+    <title>Web CMD Prompt</title>
     <style>
-        /* styles.css */
+        /* 本物のCMDプロンプトのようなスタイル */
         body {
-            background-color: #282c34;
-            color: #61dafb;
-            font-family: 'Courier New', Courier, monospace;
+            background-color: black;
+            color: white;
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -18,38 +18,45 @@
         }
 
         .terminal {
-            border: 2px solid #61dafb;
-            border-radius: 5px;
-            padding: 20px;
-            width: 600px;
-            height: 400px;
+            background-color: black;
+            color: white;
+            border: 1px solid #444;
+            padding: 10px;
+            width: 800px;
+            height: 500px;
             overflow-y: auto;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
         }
 
         .output {
-            white-space: pre-wrap; /* 改行を維持 */
+            white-space: pre-wrap; /* コマンドプロンプトのように改行 */
         }
 
         input[type="text"] {
             width: 100%;
-            background-color: #282c34;
-            color: #61dafb;
+            background-color: black;
+            color: white;
             border: none;
             outline: none;
             font-size: 16px;
+        }
+
+        .cmd-path {
+            color: lightgreen;
         }
     </style>
 </head>
 <body>
     <div class="terminal">
         <div class="output" id="output"></div>
-        <input type="text" id="command" placeholder="コマンドを入力..." autofocus />
+        <div class="cmd-path" id="cmd-path">C:\\Users\\User></div>
+        <input type="text" id="command" autofocus />
     </div>
+
     <script>
-        // script.js
         const commandInput = document.getElementById('command');
         const outputDiv = document.getElementById('output');
+        const cmdPathDiv = document.getElementById('cmd-path');
 
         commandInput.addEventListener('keypress', function (event) {
             if (event.key === 'Enter') {
@@ -62,8 +69,6 @@
 
         function processCommand(command) {
             let output;
-
-            // コマンドを処理
             const args = command.trim().split(' ');
             const cmd = args[0].toLowerCase();
             
@@ -86,11 +91,11 @@
                     }
                     break;
                 default:
-                    output = `不明なコマンド: ${command}`;
+                    output = `'${command}' は、内部コマンドまたは外部コマンド、\n操作可能なプログラムまたはバッチ ファイルとして認識されていません。`;
             }
 
             // 結果を表示
-            outputDiv.innerHTML += `$ ${command}\n${output}\n\n`;
+            outputDiv.innerHTML += `C:\\Users\\User> ${command}\n${output}\n\n`;
             outputDiv.scrollTop = outputDiv.scrollHeight; // スクロールを最新の出力に合わせる
         }
 
