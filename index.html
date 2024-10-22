@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-    <link rel="manifest" href="manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web CMD Prompt</title>
+    <title>Web CMD Prompt PWA</title>
+    <link rel="manifest" href="manifest.json"> <!-- PWA対応: manifestを追加 -->
     <style>
-        
         /* 本物のCMDプロンプトのようなスタイル */
         body {
             background-color: black;
@@ -50,14 +48,14 @@
     </style>
 </head>
 <body>
-      
     <div class="terminal">
         <div class="output" id="output"></div>
         <div class="cmd-path" id="cmd-path">C:\\Users\\User></div>
         <input type="text" id="command" autofocus />
     </div>
-<script>
+
     <script>
+        // script.js
         const commandInput = document.getElementById('command');
         const outputDiv = document.getElementById('output');
         const cmdPathDiv = document.getElementById('cmd-path');
@@ -81,9 +79,6 @@
                     output = 'こんにちは！';
                     break;
                 case 'help':
-
-                case 'server':
-                    output = ' index-✅　post-✅
                     output = '利用可能なコマンド:\nhello\nping <ホスト>\nhelp\nclear';
                     break;
                 case 'clear':
@@ -117,28 +112,17 @@
                 return `Ping ${host}: Unreachable`;
             }
         }
-    </script>
-    <script>
-    // service workerの登録関係
-    if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service_worker.js').then(function(registration) {
-        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-    }).catch(function(err) {
-        console.log('ServiceWorker registration failed: ', err);
-    });
-    }
-    // vue.jsの設定関係
-    var app = new Vue({
-      el: '#app',
-      data: {
-        message: 'Hello Vue!'
-      },
-      methods: {
-        reverseMessage: function () {
-          this.message = this.message.split('').reverse().join('')
+
+        // PWA対応: Service Workerを登録
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js').then(registration => {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
         }
-      }
-    });
     </script>
 </body>
 </html>
