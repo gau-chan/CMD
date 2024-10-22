@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Command Prompt with Ping</title>
+    <style>
+        /* styles.css */
+        body {
+            background-color: #282c34;
+            color: #61dafb;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .terminal {
+            border: 2px solid #61dafb;
+            border-radius: 5px;
+            padding: 20px;
+            width: 600px;
+            height: 400px;
+            overflow-y: auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .output {
+            white-space: pre-wrap; /* 改行を維持 */
+        }
+
+        input[type="text"] {
+            width: 100%;
+            background-color: #282c34;
+            color: #61dafb;
+            border: none;
+            outline: none;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="output" id="output"></div>
+        <input type="text" id="command" placeholder="コマンドを入力..." autofocus />
+    </div>
+    <script>
+        // script.js
+        const commandInput = document.getElementById('command');
+        const outputDiv = document.getElementById('output');
+
+        commandInput.addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // フォーム送信を防ぐ
+                const command = commandInput.value;
+                processCommand(command);
+                commandInput.value = ''; // 入力フィールドをクリア
+            }
+        });
+
+        function processCommand(command) {
+            let output;
+
+            // コマンドを処理
+            const args = command.trim().split(' ');
+            const cmd = args[0].toLowerCase();
+            
+            switch (cmd) {
+                case 'hello':
+                    output = 'こんにちは！';
+                    break;
+                case 'help':
+                    output = '利用可能なコマンド:\nhello\nping <ホスト>\nhelp\nclear';
+                    break;
+                case 'clear':
+                    outputDiv.innerHTML = ''; // 出力をクリア
+                    return; // 何も表示しない
+                case 'ping':
+                    const host = args[1];
+                    if (!host) {
+                        output = '使用法: ping <ホスト名>';
+                    } else {
+                        output = pingSimulation(host);
+                    }
+                    break;
+                default:
+                    output = `不明なコマンド: ${command}`;
+            }
+
+            // 結果を表示
+            outputDiv.innerHTML += `$ ${command}\n${output}\n\n`;
+            outputDiv.scrollTop = outputDiv.scrollHeight; // スクロールを最新の出力に合わせる
+        }
+
+        function pingSimulation(host) {
+            // ランダムに成功と失敗をシミュレート
+            const isAlive = Math.random() > 0.2; // 80%の確率で成功
+            const time = Math.floor(Math.random() * 100) + 1; // 1ms〜100msのランダムな時間
+
+            if (isAlive) {
+                return `Ping ${host}: Alive (time: ${time} ms)`;
+            } else {
+                return `Ping ${host}: Unreachable`;
+            }
+        }
+    </script>
+</body>
+</html>
