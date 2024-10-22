@@ -5,9 +5,9 @@
     "start_url": "index.html",
     "icons": [
         {
-            "src": "icon.jpg",
+            "src": "IMG_1236.jpeg",
             "sizes": "192x192",
-            "type": "image/jpg"
+            "type": "image/jpeg"
         }
     ]
 }
