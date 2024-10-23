@@ -62,7 +62,6 @@
     <div id="cmd-input-container">
         <span id="cmd-prompt">C:\\Users\\User&gt;</span>
         <input type="text" id="cmd-input" autofocus>
-        <button id="play-pause-button">Play</button>
     </div>
 </div>
 
@@ -87,10 +86,7 @@
             }
         });
 
-        // ボタンのクリックイベント
-        playPauseButton.addEventListener('click', function() {
-            // ボタンの機能を必要に応じて追加できます
-            outputCommand("Play/Pause button clicked");
+     
         });
 
         function executeCommand(command) {
