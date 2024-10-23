@@ -72,18 +72,16 @@
         const input = document.getElementById('cmd-input');
         const promptText = 'C:\\Users\\User>';
 
-        // iOS対応: フォーカスが外れた時に再度フォーカスを設定
         input.addEventListener('blur', function() {
             setTimeout(() => input.focus(), 0);
         });
 
-        // キーボードイベント処理
         input.addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
-                const command = input.value.trim(); // 入力値をトリム
-                if (command) { // コマンドが空でないか確認
+                const command = input.value.trim();
+                if (command) {
                     executeCommand(command);
-                    input.value = ''; // 入力をクリア
+                    input.value = '';
                 }
             }
         });
@@ -93,11 +91,18 @@
             outputCommand(promptText + ' ' + command);
 
             if (lowerCommand.startsWith('ping ')) {
-                const host = command.split(' ')[1]; // ホスト名を取得
+                const host = command.split(' ')[1];
                 pingHost(host);
             } else if (lowerCommand.startsWith('echo ')) {
-                const message = command.slice(5); // "echo "の後の文字列を取得
+                const message = command.slice(5);
                 echoMessage(message);
+            } else if (lowerCommand.startsWith('message ')) {
+                const msg = command.slice(8);
+                displayMessage(msg);
+            } else if (lowerCommand.startsWith('server')) {
+                startServer(); // 新しいコマンドの呼び出し
+            } else if (lowerCommand === 'time') {
+                showTime();
             } else {
                 switch (lowerCommand) {
                     case 'cls':
@@ -121,7 +126,7 @@
             const div = document.createElement('div');
             div.textContent = text;
             output.appendChild(div);
-            output.scrollTop = output.scrollHeight; // 自動的にスクロール
+            output.scrollTop = output.scrollHeight;
         }
 
         function clearScreen() {
@@ -132,9 +137,13 @@
             outputCommand('Available commands:');
             outputCommand('ping (hostname) - Simulate a ping command');
             outputCommand('echo (message) - Display a message');
+            outputCommand('message (message) - Display a custom message');
+            outputCommand('secret - Display a hidden message');
+            outputCommand('server - Start a simulated server'); // 追加
             outputCommand('cls - Clear the screen');
             outputCommand('help - Show available commands');
             outputCommand('date - Show the current date and time');
+            outputCommand('time - Show the current time');
         }
 
         function showDate() {
@@ -142,7 +151,11 @@
             outputCommand('Current date and time: ' + now.toString());
         }
 
-        // Ping機能の実装
+        function showTime() {
+            const now = new Date();
+            outputCommand('Current time: ' + now.toLocaleTimeString());
+        }
+
         function pingHost(host) {
             if (!host) {
                 outputCommand('Usage: ping (hostname)');
@@ -150,22 +163,35 @@
             }
             outputCommand(`Pinging ${host} with 32 bytes of data:`);
             setTimeout(() => {
-                const time = Math.floor(Math.random() * 100) + 1; // ランダムな応答時間
+                const time = Math.floor(Math.random() * 100) + 1; 
                 outputCommand(`Reply from ${host}: bytes=32 time=${time}ms TTL=128`);
             }, 1000);
         }
 
-        // echoコマンドの実装
         function echoMessage(message) {
             if (message.trim() === '') {
-                outputCommand(''); // 空のメッセージの場合、空行を出力
+                outputCommand('');
             } else {
                 outputCommand(message);
             }
+        }
+
+        function displayMessage(message) {
+            if (message.trim() === '') {
+                outputCommand('No message provided.');
+            } else {
+                outputCommand('Message: ' + message);
+            }
+        }
+
+        function startServer() {
+            outputCommand('Starting server...');
+            setTimeout(() => {
+                outputCommand('Server started successfully at http://localhost:3000');
+            }, 1000); // 1秒後にサーバーが起動したことを表示
         }
     });
 </script>
 
 </body>
 </html>
-
