@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web CMD Prompt</title>
+    <title>iOS Compatible CMD Prompt</title>
     <style>
         body {
             background-color: black;
@@ -11,30 +11,32 @@
             font-family: Consolas, "Courier New", monospace;
             margin: 0;
             padding: 0;
-            height: 90vh; /* 画面の全高さ */
-        }
-        #cmd-container {
-            width: 100%;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            padding: 0;
-            box-sizing: border-box;
+        }
+        #cmd-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
             background-color: black;
+            height: 100%;
+            overflow: hidden; /* iOSの画面全体に対応 */
         }
         #cmd-output {
             flex-grow: 1;
-            width: 100%;
-            padding: 20px;
+            padding: 10px;
             overflow-y: auto;
             box-sizing: border-box;
             color: #00FF00;
+            max-height: 70vh;
         }
         #cmd-input-container {
             display: flex;
             align-items: center;
-            padding: 20px;
+            padding: 10px;
             box-sizing: border-box;
+            background-color: black;
         }
         #cmd-prompt {
             color: #00FF00;
@@ -44,9 +46,11 @@
             color: #00FF00;
             border: none;
             flex-grow: 1;
-            font-size: 20px;
+            font-size: 16px;
             font-family: Consolas, "Courier New", monospace;
             caret-color: #00FF00;
+            min-height: 1.5em;
+            line-height: 1.5em;
         }
         #cmd-input:focus {
             outline: none;
@@ -67,28 +71,25 @@
     document.addEventListener('DOMContentLoaded', function() {
         const output = document.getElementById('cmd-output');
         const input = document.getElementById('cmd-input');
-        const promptText = 'C:\\Users\\User>'; // CMD風のプロンプトテキスト
+        const promptText = 'C:\\Users\\User>';
 
-   input.addEventListener('keypress', function(event) {
-    if (event.key === 'Enter') {
-        const command = input.value;
-        executeCommand(command);
-        input.value = ''; // 入力をクリア
-    }
-});
+        // iOS対応: フォーカスが外れた時に再度フォーカスを設定
         input.addEventListener('blur', function() {
-    setTimeout(function() {
-        input.focus();
-    }, 0);
-});
+            setTimeout(() => input.focus(), 0);
+        });
 
-
+        // キーボードイベント処理
+        input.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const command = input.value;
+                executeCommand(command);
+                input.value = ''; // 入力をクリア
             }
         });
 
         function executeCommand(command) {
-            const lowerCommand = command.trim().toLowerCase(); // 小文字に変換して比較
-            outputCommand(promptText + ' ' + command); // 入力されたコマンドを表示
+            const lowerCommand = command.trim().toLowerCase();
+            outputCommand(promptText + ' ' + command);
 
             switch (lowerCommand) {
                 case 'ping':
@@ -106,8 +107,6 @@
                 case 'date':
                     showDate();
                     break;
-              case 'server':
-                    showServer();
                 default:
                     outputCommand(`'${command}' is not recognized as an internal or external command,`);
                     outputCommand('operable program or batch file.');
@@ -119,10 +118,9 @@
             const div = document.createElement('div');
             div.textContent = text;
             output.appendChild(div);
-            output.scrollTop = output.scrollHeight; // スクロールを下に合わせる
+            output.scrollTop = output.scrollHeight; // 自動的にスクロール
         }
-        function showServer
-            output = 'test'
+
         function clearScreen() {
             output.innerHTML = '';
         }
