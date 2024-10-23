@@ -1,12 +1,10 @@
-// service-worker.js
-
 const CACHE_NAME = 'cmd-prompt-cache-v1';
 const urlsToCache = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/style.css', // 必要な場合はCSSファイルもキャッシュ
-  '/script.js'  // 必要な場合はJSファイルもキャッシュ
+  '/style.css',
+  '/script.js'
 ];
 
 // インストールイベントでキャッシュにファイルを追加
@@ -20,18 +18,20 @@ self.addEventListener('install', function(event) {
   );
 });
 
-// リクエストをキャッシュから提供する
+// fetchイベントでGETリクエストのみキャッシュ処理
 self.addEventListener('fetch', function(event) {
+  // POSTリクエストはキャッシュせず、そのままネットワークに送信
+  if (event.request.method !== 'GET') {
+    return; // POSTリクエストは処理しない
+  }
+
+  // GETリクエストの場合のみキャッシュから応答する
   event.respondWith(
     caches.match(event.request)
       .then(function(response) {
-        // キャッシュが見つかればキャッシュからレスポンス
-        if (response) {
-          return response;
-        }
-        return fetch(event.request);
-      }
-    )
+        // キャッシュがあればキャッシュからレスポンス、なければネットワークから取得
+        return response || fetch(event.request);
+      })
   );
 });
 
