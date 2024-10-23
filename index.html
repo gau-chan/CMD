@@ -76,6 +76,12 @@
         input.value = ''; // 入力をクリア
     }
 });
+        input.addEventListener('blur', function() {
+    setTimeout(function() {
+        input.focus();
+    }, 0);
+});
+
 
             }
         });
