@@ -3,25 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iOS Compatible CMD Prompt</title>
+    <title>CMD Prompt with Hidden Message Command</title>
     <style>
         body {
-            background-color: black;
-            color: white;
-            font-family: Consolas, "Courier New", monospace;
             margin: 0;
             padding: 0;
             height: 100vh;
-            display: flex;
-            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            font-family: Consolas, "Courier New", monospace;
+            background-color: black; /* 背景色を黒に設定 */
         }
         #cmd-container {
-            flex-grow: 1;
             display: flex;
             flex-direction: column;
-            background-color: black;
             height: 100%;
             overflow: hidden;
+            color: white;
         }
         #cmd-output {
             flex-grow: 1;
@@ -35,7 +33,7 @@
             align-items: center;
             padding: 10px;
             box-sizing: border-box;
-            background-color: black;
+            background-color: rgba(0, 0, 0, 0.7); /* 半透明の背景 */
         }
         #cmd-prompt {
             color: #00FF00;
@@ -50,9 +48,23 @@
             caret-color: #00FF00;
             min-height: 1.5em;
             line-height: 1.5em;
+            padding: 5px; /* パディングを追加 */
         }
         #cmd-input:focus {
             outline: none;
+        }
+        #play-pause-button {
+            background-color: #00FF00;
+            color: black;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 10px;
+            display: block; /* ブロック要素として表示 */
+        }
+        #play-pause-button:hover {
+            background-color: #009900; /* ホバー時の色 */
         }
     </style>
 </head>
@@ -63,6 +75,7 @@
     <div id="cmd-input-container">
         <span id="cmd-prompt">C:\\Users\\User&gt;</span>
         <input type="text" id="cmd-input" autofocus>
+        <button id="play-pause-button">Play</button>
     </div>
 </div>
 
@@ -71,6 +84,7 @@
         const output = document.getElementById('cmd-output');
         const input = document.getElementById('cmd-input');
         const promptText = 'C:\\Users\\User>';
+        const playPauseButton = document.getElementById('play-pause-button');
 
         input.addEventListener('blur', function() {
             setTimeout(() => input.focus(), 0);
@@ -86,6 +100,12 @@
             }
         });
 
+        // ボタンのクリックイベント
+        playPauseButton.addEventListener('click', function() {
+            // ボタンの機能を必要に応じて追加できます
+            outputCommand("Play/Pause button clicked");
+        });
+
         function executeCommand(command) {
             const lowerCommand = command.toLowerCase();
             outputCommand(promptText + ' ' + command);
@@ -99,6 +119,8 @@
             } else if (lowerCommand.startsWith('message ')) {
                 const msg = command.slice(8);
                 displayMessage(msg);
+            } else if (lowerCommand.startsWith('miku ')) { // 隠しメッセージコマンド
+                showMikuMessage();
             } else if (lowerCommand.startsWith('server')) {
                 startServer(); // 新しいコマンドの呼び出し
             } else if (lowerCommand === 'time') {
@@ -138,7 +160,6 @@
             outputCommand('ping (hostname) - Simulate a ping command');
             outputCommand('echo (message) - Display a message');
             outputCommand('message (message) - Display a custom message');
-            outputCommand('secret - Display a hidden message');
             outputCommand('server - Start a simulated server'); // 追加
             outputCommand('cls - Clear the screen');
             outputCommand('help - Show available commands');
@@ -182,6 +203,11 @@
             } else {
                 outputCommand('Message: ' + message);
             }
+        }
+
+        function showMikuMessage() {
+            const MikuMessage = "https://gau-chan.github.io/CMD/miku.html"; // 隠しメッセージ
+            outputCommand(MikuMessage);
         }
 
         function startServer() {
