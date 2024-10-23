@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iOS Compatible CMD Prompt with Video Background</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            font-family: Consolas, "Courier New", monospace;
+        }
+        video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1; /* 背景を最背面に */
+            transform: translate(-50%, -50%);
+        }
+        #cmd-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+            color: white;
+        }
+        #cmd-output {
+            flex-grow: 1;
+            padding: 10px;
+            overflow-y: auto;
+            box-sizing: border-box;
+            color: #00FF00;
+        }
+        #cmd-input-container {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            box-sizing: border-box;
+            background-color: rgba(0, 0, 0, 0.7); /* 半透明の背景 */
+        }
+        #cmd-prompt {
+            color: #00FF00;
+        }
+        #cmd-input {
+            background-color: black;
+            color: #00FF00;
+            border: none;
+            flex-grow: 1;
+            font-size: 16px;
+            font-family: Consolas, "Courier New", monospace;
+            caret-color: #00FF00;
+            min-height: 1.5em;
+            line-height: 1.5em;
+        }
+        #cmd-input:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+<video autoplay muted loop>
+    <source src="background-video.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+
+<div id="cmd-container">
+    <div id="cmd-output"></div>
+    <div id="cmd-input-container">
+        <span id="cmd-prompt">C:\\Users\\User&gt;</span>
+        <input type="text" id="cmd-input" autofocus>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const output = document.getElementById('cmd-output');
+        const input = document.getElementById('cmd-input');
+        const promptText = 'C:\\Users\\User>';
+
+        input.addEventListener('blur', function() {
+            setTimeout(() => input.focus(), 0);
+        });
+
+        input.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const command = input.value.trim();
+                if (command) {
+                    executeCommand(command);
+                    input.value = '';
+                }
+            }
+        });
+
+        function executeCommand(command) {
+            const lowerCommand = command.toLowerCase();
+            outputCommand(promptText + ' ' + command);
+
+            if (lowerCommand.startsWith('ping ')) {
+                const host = command.split(' ')[1];
+                pingHost(host);
+            } else if (lowerCommand.startsWith('echo ')) {
+                const message = command.slice(5);
+                echoMessage(message);
+            } else if (lowerCommand.startsWith('message ')) {
+                const msg = command.slice(8);
+                displayMessage(msg);
+            } else if (lowerCommand.startsWith('server')) {
+                startServer(); // 新しいコマンドの呼び出し
+            } else if (lowerCommand === 'time') {
+                showTime();
+            } else {
+                switch (lowerCommand) {
+                    case 'cls':
+                        clearScreen();
+                        break;
+                    case 'help':
+                        showHelp();
+                        break;
+                    case 'date':
+                        showDate();
+                        break;
+                    default:
+                        outputCommand(`'${command}' is not recognized as an internal or external command,`);
+                        outputCommand('operable program or batch file.');
+                        break;
+                }
+            }
+        }
+
+        function outputCommand(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            output.appendChild(div);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function clearScreen() {
+            output.innerHTML = '';
+        }
+
+        function showHelp() {
+            outputCommand('Available commands:');
+            outputCommand('ping (hostname) - Simulate a ping command');
+            outputCommand('echo (message) - Display a message');
+            outputCommand('message (message) - Display a custom message');
+            outputCommand('server - Start a simulated server'); // 追加
+            outputCommand('cls - Clear the screen');
+            outputCommand('help - Show available commands');
+            outputCommand('date - Show the current date and time');
+            outputCommand('time - Show the current time');
+        }
+
+        function showDate() {
+            const now = new Date();
+            outputCommand('Current date and time: ' + now.toString());
+        }
+
+        function showTime() {
+            const now = new Date();
+            outputCommand('Current time: ' + now.toLocaleTimeString());
+        }
+
+        function pingHost(host) {
+            if (!host) {
+                outputCommand('Usage: ping (hostname)');
+                return;
+            }
+            outputCommand(`Pinging ${host} with 32 bytes of data:`);
+            setTimeout(() => {
+                const time = Math.floor(Math.random() * 100) + 1; 
+                outputCommand(`Reply from ${host}: bytes=32 time=${time}ms TTL=128`);
+            }, 1000);
+        }
+
+        function echoMessage(message) {
+            if (message.trim() === '') {
+                outputCommand('');
+            } else {
+                outputCommand(message);
+            }
+        }
+
+        function displayMessage(message) {
+            if (message.trim() === '') {
+                outputCommand('No message provided.');
+            } else {
+                outputCommand('Message: ' + message);
+            }
+        }
+
+        function startServer() {
+            outputCommand('Starting server...');
+            setTimeout(() => {
+                outputCommand('Server started successfully at http://localhost:3000');
+            }, 1000); // 1秒後にサーバーが起動したことを表示
+        }
+    });
+</script>
+
+</body>
+</html>
+
