@@ -94,6 +94,9 @@
             if (lowerCommand.startsWith('ping ')) {
                 const host = command.split(' ')[1]; // ホスト名を取得
                 pingHost(host);
+            } else if (lowerCommand.startsWith('echo ')) {
+                const message = command.slice(5); // "echo "の後の文字列を取得
+                echoMessage(message);
             } else {
                 switch (lowerCommand) {
                     case 'cls':
@@ -104,8 +107,6 @@
                         break;
                     case 'date':
                         showDate();
-                    case 'server':
-                        showServer();
                         break;
                     default:
                         outputCommand(`'${command}' is not recognized as an internal or external command,`);
@@ -125,12 +126,11 @@
         function clearScreen() {
             output.innerHTML = '';
         }
-        function showServer() {
-            output = 'index'
 
         function showHelp() {
             outputCommand('Available commands:');
             outputCommand('ping (hostname) - Simulate a ping command');
+            outputCommand('echo (message) - Display a message');
             outputCommand('cls - Clear the screen');
             outputCommand('help - Show available commands');
             outputCommand('date - Show the current date and time');
@@ -152,6 +152,15 @@
                 const time = Math.floor(Math.random() * 100) + 1; // ランダムな応答時間
                 outputCommand(`Reply from ${host}: bytes=32 time=${time}ms TTL=128`);
             }, 1000);
+        }
+
+        // echoコマンドの実装
+        function echoMessage(message) {
+            if (message.trim() === '') {
+                outputCommand('');
+            } else {
+                outputCommand(message);
+            }
         }
     });
 </script>
