@@ -179,7 +179,7 @@
                 outputCommand(`Reply from ${host}: bytes=30 time=${time}ms TTL=128`);
                 outputCommand(`Reply from ${host}: bytes=30 time=${time}ms TTL=。128`);
                 outputCommand(`${host}統計:パケット数:送信=4 受信=4 損失time=0(0%の損失)`);
-                outputCommand(`トリップラウンドの概算時間　(ミリ秒) :最大=5 最小=3 平均=${time}`);
+                outputCommand(`トリップラウンドの概算時間　(ミリ秒) :最大=50 最小=10 平均=${time}`);
                 
             }, 1000);
         }
