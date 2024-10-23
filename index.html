@@ -69,11 +69,14 @@
         const input = document.getElementById('cmd-input');
         const promptText = 'C:\\Users\\User>'; // CMD風のプロンプトテキスト
 
-        input.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                const command = input.value;
-                executeCommand(command);
-                input.value = ''; // 入力をクリア
+   input.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        const command = input.value;
+        executeCommand(command);
+        input.value = ''; // 入力をクリア
+    }
+});
+
             }
         });
 
