@@ -91,26 +91,27 @@
             const lowerCommand = command.trim().toLowerCase();
             outputCommand(promptText + ' ' + command);
 
-            switch (lowerCommand) {
-                case 'ping':
-                    outputCommand('Pinging...');
-                    setTimeout(() => {
-                        outputCommand('Reply from 127.0.0.1: time=10ms');
-                    }, 1000);
-                    break;
-                case 'cls':
-                    clearScreen();
-                    break;
-                case 'help':
-                    showHelp();
-                    break;
-                case 'date':
-                    showDate();
-                    break;
-                default:
-                    outputCommand(`'${command}' is not recognized as an internal or external command,`);
-                    outputCommand('operable program or batch file.');
-                    break;
+            if (lowerCommand.startsWith('ping ')) {
+                const host = command.split(' ')[1]; // ホスト名を取得
+                pingHost(host);
+            } else {
+                switch (lowerCommand) {
+                    case 'cls':
+                        clearScreen();
+                        break;
+                    case 'help':
+                        showHelp();
+                        break;
+                    case 'date':
+                        showDate();
+                    case 'server':
+                        showServer();
+                        break;
+                    default:
+                        outputCommand(`'${command}' is not recognized as an internal or external command,`);
+                        outputCommand('operable program or batch file.');
+                        break;
+                }
             }
         }
 
@@ -124,10 +125,12 @@
         function clearScreen() {
             output.innerHTML = '';
         }
+        function showServer() {
+            output = 'index'
 
         function showHelp() {
             outputCommand('Available commands:');
-            outputCommand('ping - Simulate a ping command');
+            outputCommand('ping (hostname) - Simulate a ping command');
             outputCommand('cls - Clear the screen');
             outputCommand('help - Show available commands');
             outputCommand('date - Show the current date and time');
@@ -136,6 +139,19 @@
         function showDate() {
             const now = new Date();
             outputCommand('Current date and time: ' + now.toString());
+        }
+
+        // Ping機能の実装
+        function pingHost(host) {
+            if (!host) {
+                outputCommand('Usage: ping (hostname)');
+                return;
+            }
+            outputCommand(`Pinging ${host} with 32 bytes of data:`);
+            setTimeout(() => {
+                const time = Math.floor(Math.random() * 100) + 1; // ランダムな応答時間
+                outputCommand(`Reply from ${host}: bytes=32 time=${time}ms TTL=128`);
+            }, 1000);
         }
     });
 </script>
