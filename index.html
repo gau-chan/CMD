@@ -21,7 +21,7 @@
             flex-direction: column;
             background-color: black;
             height: 100%;
-            overflow: hidden; /* iOSの画面全体に対応 */
+            overflow: hidden;
         }
         #cmd-output {
             flex-grow: 1;
@@ -29,7 +29,6 @@
             overflow-y: auto;
             box-sizing: border-box;
             color: #00FF00;
-            max-height: 70vh;
         }
         #cmd-input-container {
             display: flex;
@@ -81,14 +80,16 @@
         // キーボードイベント処理
         input.addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
-                const command = input.value;
-                executeCommand(command);
-                input.value = ''; // 入力をクリア
+                const command = input.value.trim(); // 入力値をトリム
+                if (command) { // コマンドが空でないか確認
+                    executeCommand(command);
+                    input.value = ''; // 入力をクリア
+                }
             }
         });
 
         function executeCommand(command) {
-            const lowerCommand = command.trim().toLowerCase();
+            const lowerCommand = command.toLowerCase();
             outputCommand(promptText + ' ' + command);
 
             if (lowerCommand.startsWith('ping ')) {
@@ -108,8 +109,6 @@
                     case 'date':
                         showDate();
                         break;
-                    case 'server'
-                        showServer();
                     default:
                         outputCommand(`'${command}' is not recognized as an internal or external command,`);
                         outputCommand('operable program or batch file.');
@@ -159,16 +158,14 @@
         // echoコマンドの実装
         function echoMessage(message) {
             if (message.trim() === '') {
-                outputCommand('');
+                outputCommand(''); // 空のメッセージの場合、空行を出力
             } else {
                 outputCommand(message);
             }
         }
-        function showServer()
-        outputCommand('index')
-        
     });
 </script>
 
 </body>
 </html>
+
